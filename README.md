@@ -55,3 +55,19 @@ The **Quarkus Delay API** (Java) is the **consumer**.
   - Exposes its own metrics and integrates with Grafana.  
 
 **Together**, they form an end-to-end pipeline:
+
+# Flight Sentinel – Ingestion (Python)
+
+This service **simulates live flight events**:
+- Reads flight rows from a CSV
+- Normalizes the data (uppercase codes, ISO timestamps)
+- Publishes JSON events to **Kafka** (`flights.raw`)
+- Sends broken rows to **DLQ** (`flights.dlq`)
+- Exposes **Prometheus metrics** at `http://localhost:9108/metrics`
+
+## Quick start
+```bash
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python -m ingestion_py.main --csv ./sample_data/flights_sample.csv
